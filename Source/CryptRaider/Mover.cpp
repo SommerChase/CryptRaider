@@ -29,6 +29,13 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	// ...
+	// Learning about pointers
+	AActor* Owner = GetOwner();
+
+	// First pointer location on same actor: 3065465600
+	// Second pointer location on same actor: 3833548800
+	// When we press play in UE, a whole new set of actors are created.
+	// That's why we see new addresses each time we hit play.
+	UE_LOG(LogTemp, Display, TEXT("This actor's name is %u"), Owner);
 }
 
