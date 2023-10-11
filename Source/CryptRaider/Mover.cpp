@@ -2,6 +2,7 @@
 
 
 #include "Mover.h"
+#include "Math/UnrealMathUtility.h"
 
 // Sets default values for this component's properties
 UMover::UMover()
@@ -19,7 +20,7 @@ void UMover::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
+	OriginalLocation = GetOwner()->GetActorLocation();
 	
 }
 
@@ -29,6 +30,17 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (ShouldMove == true)
+	{
+		FVector CurrentLocation = GetOwner()->GetActorLocation();
+    	FVector TargetLocation = OriginalLocation + MoveOffset;
+    	float Speed = FVector::Distance(OriginalLocation, TargetLocation) / MoveTime;
+    	
+    	FVector NewLocation = FMath::VInterpConstantTo(CurrentLocation, TargetLocation, DeltaTime, Speed);
+    	GetOwner()->SetActorLocation(NewLocation);	
+	}
+	
+	/*
 	// Learning about pointers
 	AActor* Owner = GetOwner();
 	// FString Name = (*Owner).GetActorNameOrLabel();
@@ -51,7 +63,6 @@ void UMover::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponent
 	// That's why we see new addresses each time we hit play.
 	// UE_LOG(LogTemp, Display, TEXT("Mover Owner Address %u"), Owner);
 
-	/* 
 	// Pointing to the same address
 	float MyFloat = 5; // Define variable
 	float* YourFloat = &MyFloat; // Assign address to pointer
