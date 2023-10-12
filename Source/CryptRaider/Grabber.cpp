@@ -31,6 +31,13 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+
+	// Create line coming from camera to debug line tracing:
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
+	
+	/* Lecture 86:
 	// Print rotation of the camera:
 	FRotator MyRotation = GetComponentRotation();
 	FString RotationString = MyRotation.ToCompactString();
@@ -41,5 +48,6 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	// float WorldTimeSeconds = World->TimeSeconds;
 	float Time = GetWorld()->TimeSeconds;
 	UE_LOG(LogTemp, Display, TEXT("World Seconds: %f"), Time);
+	*/
 }
 
