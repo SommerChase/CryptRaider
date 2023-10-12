@@ -3,6 +3,8 @@
 
 #include "Grabber.h"
 
+#include "Engine/World.h"
+
 // Sets default values for this component's properties
 UGrabber::UGrabber()
 {
@@ -33,5 +35,11 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FRotator MyRotation = GetComponentRotation();
 	FString RotationString = MyRotation.ToCompactString();
 	UE_LOG(LogTemp, Display, TEXT("Grabber Rotation %s"), *RotationString);
+
+	// The 2 lines below were condensed to the 3rd line:
+	// UWorld* World = GetWorld();
+	// float WorldTimeSeconds = World->TimeSeconds;
+	float Time = GetWorld()->TimeSeconds;
+	UE_LOG(LogTemp, Display, TEXT("World Seconds: %f"), Time);
 }
 
