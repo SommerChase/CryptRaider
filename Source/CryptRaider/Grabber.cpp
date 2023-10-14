@@ -30,8 +30,11 @@ void UGrabber::BeginPlay()
 void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+	
+}
 
-
+void UGrabber::Grab()
+{
 	// Create line coming from camera to debug line tracing:
 	FVector Start = GetComponentLocation();
 	FVector End = Start + GetForwardVector() * MaxGrabDistance;
@@ -39,24 +42,24 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 	FHitResult HitResult;
-
+	
 	if (bool HasHit = GetWorld()->SweepSingleByChannel(
-		HitResult,
-		Start,
-		End,
-		FQuat::Identity, // Means no rotation
-		ECC_GameTraceChannel2, // Go to Config/DefaultEngine.ini and search for Grabber to find channel.
-		Sphere
-	))
-	{
-		AActor* HitActor = HitResult.GetActor();
-		UE_LOG(LogTemp, Display, TEXT("Actor Hit: %s"), *HitActor->GetActorNameOrLabel());
-		// FHitResult HitActor = HitResult.GetActor();
-	}
-	else
-	{
-		UE_LOG(LogTemp, Display, TEXT("No Actor hit"))
-	}
+			HitResult,
+			Start,
+			End,
+			FQuat::Identity, // Means no rotation
+			ECC_GameTraceChannel2, // Go to Config/DefaultEngine.ini and search for Grabber to find channel.
+			Sphere
+		))
+		{
+			AActor* HitActor = HitResult.GetActor();
+			UE_LOG(LogTemp, Display, TEXT("Actor Hit: %s"), *HitActor->GetActorNameOrLabel());
+			// FHitResult HitActor = HitResult.GetActor();
+		}
+		else
+		{
+			UE_LOG(LogTemp, Display, TEXT("No Actor hit"))
+		}
 	
 	/* Lecture 86:
 	// Print rotation of the camera:
@@ -71,4 +74,11 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	UE_LOG(LogTemp, Display, TEXT("World Seconds: %f"), Time);
 	*/
 }
+
+
+void UGrabber::Release()
+{
+	UE_LOG(LogTemp, Display, TEXT("Released"));
+}
+
 
