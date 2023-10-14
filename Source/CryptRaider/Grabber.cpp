@@ -36,6 +36,27 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 	FVector Start = GetComponentLocation();
 	FVector End = Start + GetForwardVector() * MaxGrabDistance;
 	DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
+
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
+	FHitResult HitResult;
+
+	if (bool HasHit = GetWorld()->SweepSingleByChannel(
+		HitResult,
+		Start,
+		End,
+		FQuat::Identity, // Means no rotation
+		ECC_GameTraceChannel2, // Go to Config/DefaultEngine.ini and search for Grabber to find channel.
+		Sphere
+	))
+	{
+		AActor* HitActor = HitResult.GetActor();
+		UE_LOG(LogTemp, Display, TEXT("Actor Hit: %s"), *HitActor->GetActorNameOrLabel());
+		// FHitResult HitActor = HitResult.GetActor();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("No Actor hit"))
+	}
 	
 	/* Lecture 86:
 	// Print rotation of the camera:
