@@ -47,8 +47,12 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 		return;
 	}
 
-	FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
-	PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());
+	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	{
+		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
+    	PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());	
+	}
+
 		
 }
 
@@ -79,8 +83,10 @@ void UGrabber::Grab()
 			Sphere
 		))
 		{
+			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+			HitComponent->WakeAllRigidBodies();
 			PhysicsHandle->GrabComponentAtLocationWithRotation(
-				HitResult.GetComponent(),
+				HitComponent,
 				NAME_None,
 				HitResult.ImpactPoint,
 				GetComponentRotation()
@@ -117,8 +123,20 @@ void UGrabber::Grab()
 
 void UGrabber::Release()
 {
-	UE_LOG(LogTemp, Display, TEXT("Released"));
+	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
+	if (PhysicsHandle == nullptr)
+	{
+		return;
+	}
+
+	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	{
+		PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
+		PhysicsHandle->ReleaseComponent();
+	}
+	// UE_LOG(LogTemp, Display, TEXT("Released"));
 }
+
 
 UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 {

@@ -43,5 +43,5 @@ private:
 	float HoldDistance = 200;
 
 	UPhysicsHandleComponent* GetPhysicsHandle() const;
-		
+
 };
