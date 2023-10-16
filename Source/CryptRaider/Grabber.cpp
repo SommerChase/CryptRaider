@@ -64,24 +64,10 @@ void UGrabber::Grab()
 	{
 		return;
 	}
-	
-	// Create line coming from camera to debug line tracing:
-	FVector Start = GetComponentLocation();
-	FVector End = Start + GetForwardVector() * MaxGrabDistance;
-	DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
-	// DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Emerald, false, 5);
 
-	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
 	FHitResult HitResult;
-	
-	if (bool HasHit = GetWorld()->SweepSingleByChannel(
-			HitResult,
-			Start,
-			End,
-			FQuat::Identity, // Means no rotation
-			ECC_GameTraceChannel2, // Go to Config/DefaultEngine.ini and search for Grabber to find channel.
-			Sphere
-		))
+	bool HasHit = GetGrabbableInReach(HitResult);
+	if (HasHit)
 		{
 			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
 			HitComponent->WakeAllRigidBodies();
@@ -91,33 +77,7 @@ void UGrabber::Grab()
 				HitResult.ImpactPoint,
 				GetComponentRotation()
 				);
-			
-			/* Debugging from Lectures 90+	
-			DrawDebugSphere(GetWorld(), HitResult.Location, 10, 10, FColor::Emerald, false, 5);
-			DrawDebugSphere(GetWorld(), HitResult.ImpactPoint, 10, 10, FColor::Blue, false, 5);
-			AActor* HitActor = HitResult.GetActor();
-			UE_LOG(LogTemp, Display, TEXT("Actor Hit: %s"), *HitActor->GetActorNameOrLabel());
-			// FHitResult HitActor = HitResult.GetActor();
-			*/
 		}
-		else
-		{
-			// Debugging from lectures 90+:
-			// UE_LOG(LogTemp, Display, TEXT("No Actor hit"))
-		}
-	
-	/* Lecture 86:
-	// Print rotation of the camera:
-	FRotator MyRotation = GetComponentRotation();
-	FString RotationString = MyRotation.ToCompactString();
-	UE_LOG(LogTemp, Display, TEXT("Grabber Rotation %s"), *RotationString);
-
-	// The 2 lines below were condensed to the 3rd line:
-	// UWorld* World = GetWorld();
-	// float WorldTimeSeconds = World->TimeSeconds;
-	float Time = GetWorld()->TimeSeconds;
-	UE_LOG(LogTemp, Display, TEXT("World Seconds: %f"), Time);
-	*/
 }
 
 
@@ -148,5 +108,24 @@ UPhysicsHandleComponent* UGrabber::GetPhysicsHandle() const
 	return Result;
 }
 
+bool UGrabber::GetGrabbableInReach(FHitResult& OutHitResult) const
+{
+	// Create line coming from camera to debug line tracing:
+	FVector Start = GetComponentLocation();
+	FVector End = Start + GetForwardVector() * MaxGrabDistance;
+	DrawDebugLine(GetWorld(), Start, End, FColor::Cyan);
+	// DrawDebugSphere(GetWorld(), End, 10, 10, FColor::Emerald, false, 5);
+
+	FCollisionShape Sphere = FCollisionShape::MakeSphere(GrabRadius);
+	
+	return GetWorld()->SweepSingleByChannel(
+		OutHitResult,
+		Start,
+		End,
+		FQuat::Identity, // Means no rotation
+		ECC_GameTraceChannel2, // Go to Config/DefaultEngine.ini and search for Grabber to find channel.
+		Sphere);
+
+}
 
 
