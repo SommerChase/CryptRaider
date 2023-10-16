@@ -3,3 +3,10 @@
 
 #include "TriggerComponent.h"
 
+// Called when the game starts
+void UTriggerComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	UE_LOG(LogTemp, Display, TEXT("I'm triggered bb"))
+}
