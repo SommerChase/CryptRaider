@@ -3,6 +3,7 @@
 
 #include "TriggerComponent.h"
 #include "GameFramework/Actor.h"
+#include "Misc/TextFilterExpressionEvaluator.h"
 
 UTriggerComponent::UTriggerComponent()
 {
@@ -24,9 +25,9 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 	TArray<AActor*> Actors;
 	GetOverlappingActors(Actors);
 	
-	if (Actors.Num() > 0)
+	for (int32 i = 0; i < Actors.Num(); ++i)
 	{
-		FString ActorName = Actors[0]->GetActorNameOrLabel();
-		UE_LOG(LogTemp, Display, TEXT("Overlapping: %s"), *ActorName)
+		FString ActorName = Actors[i]->GetActorNameOrLabel();
+    	UE_LOG(LogTemp, Display, TEXT("Overlapping: %s"), *ActorName);
 	}
 }
