@@ -2,6 +2,7 @@
 
 
 #include "TriggerComponent.h"
+#include "GameFramework/Actor.h"
 
 UTriggerComponent::UTriggerComponent()
 {
@@ -20,5 +21,12 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
-	UE_LOG(LogTemp, Display, TEXT("I'm a ticking timebomb!"))
+	TArray<AActor*> Actors;
+	GetOverlappingActors(Actors);
+	
+	if (Actors.Num() > 0)
+	{
+		FString ActorName = Actors[0]->GetActorNameOrLabel();
+		UE_LOG(LogTemp, Display, TEXT("Overlapping: %s"), *ActorName)
+	}
 }
