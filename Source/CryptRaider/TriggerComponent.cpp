@@ -22,26 +22,29 @@ void UTriggerComponent::TickComponent(float DeltaTime, ELevelTick TickType, FAct
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
 
+	if (GetAcceptableActor() != nullptr)
+	{
+		UE_LOG(LogTemp, Display, TEXT("%s"), *GetAcceptableActor()->GetActorNameOrLabel())
+	}
+	else
+	{
+		UE_LOG(LogTemp, Display, TEXT("None"))
+	}
+}
+
+AActor* UTriggerComponent::GetAcceptableActor() const
+{
 	TArray<AActor*> Actors;
 	GetOverlappingActors(Actors);
-
-	/*
-	 *Index-based for loop. Equivalent is used below in range-based.
-	for (int32 i = 0; i < Actors.Num(); ++i)
-	{
-		FString ActorName = Actors[i]->GetActorNameOrLabel();
-    	UE_LOG(LogTemp, Display, TEXT("Overlapping: %s"), *ActorName);
-	}
-	*/
-
-	// FName SecretWallUnlock = UnlockTagName;
 	// Range-based for loop. Good for collection types that contain things.
 	for (AActor* Actor : Actors)
 	{
 		// FString ActorName = Actor->GetActorNameOrLabel();
 		if (Actor->ActorHasTag(AcceptableActorTag))
 		{
-			UE_LOG(LogTemp, Display, TEXT("Unlocking"));
+			return Actor;
 		}
 	}
+
+	return nullptr;	
 }
