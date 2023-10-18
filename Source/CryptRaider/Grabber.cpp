@@ -81,9 +81,9 @@ void UGrabber::Release()
 	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
 	{
 		PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
-		PhysicsHandle->ReleaseComponent();
 		AActor* GrabbedActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
 		GrabbedActor->Tags.Remove("Grabbed");
+		PhysicsHandle->ReleaseComponent();
 
 	}
 	// UE_LOG(LogTemp, Display, TEXT("Released"));
