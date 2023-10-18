@@ -30,12 +30,8 @@ void UGrabber::TickComponent(float DeltaTime, ELevelTick TickType, FActorCompone
 
 	// An early return in case the PhysicsHandle is null	
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (PhysicsHandle == nullptr)
-	{
-		return;
-	}
-
-	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	// Checks if ptr is not null and if there is also a component:
+	if (PhysicsHandle && PhysicsHandle->GetGrabbedComponent())
 	{
 		FVector TargetLocation = GetComponentLocation() + GetForwardVector() * HoldDistance;
     	PhysicsHandle->SetTargetLocationAndRotation(TargetLocation, GetComponentRotation());	
@@ -73,12 +69,8 @@ void UGrabber::Grab()
 void UGrabber::Release()
 {
 	UPhysicsHandleComponent* PhysicsHandle = GetPhysicsHandle();
-	if (PhysicsHandle == nullptr)
-	{
-		return;
-	}
 
-	if (PhysicsHandle->GetGrabbedComponent() != nullptr)
+	if (PhysicsHandle && PhysicsHandle->GetGrabbedComponent())
 	{
 		PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
 		AActor* GrabbedActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();

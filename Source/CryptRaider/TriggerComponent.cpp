@@ -57,8 +57,10 @@ AActor* UTriggerComponent::GetAcceptableActor() const
 	// Range-based for loop. Good for collection types that contain things.
 	for (AActor* Actor : Actors)
 	{
+		bool HasAcceptableTag = Actor->ActorHasTag(AcceptableActorTag);
+		bool IsGrabbed = Actor->ActorHasTag("Grabbed");
 		// FString ActorName = Actor->GetActorNameOrLabel();
-		if (Actor->ActorHasTag(AcceptableActorTag))
+		if (HasAcceptableTag && !IsGrabbed)
 		{
 			return Actor;
 		}
