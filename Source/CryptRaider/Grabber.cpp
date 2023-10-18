@@ -56,16 +56,17 @@ void UGrabber::Grab()
 	FHitResult HitResult;
 	bool HasHit = GetGrabbableInReach(HitResult);
 	if (HasHit)
-		{
-			UPrimitiveComponent* HitComponent = HitResult.GetComponent();
-			HitComponent->WakeAllRigidBodies();
-			PhysicsHandle->GrabComponentAtLocationWithRotation(
-				HitComponent,
-				NAME_None,
-				HitResult.ImpactPoint,
-				GetComponentRotation()
-				);
-		}
+	{
+		UPrimitiveComponent* HitComponent = HitResult.GetComponent();
+		HitComponent->WakeAllRigidBodies();
+		HitResult.GetActor()->Tags.Add("Grabbed");
+		PhysicsHandle->GrabComponentAtLocationWithRotation(
+			HitComponent,
+			NAME_None,
+			HitResult.ImpactPoint,
+			GetComponentRotation()
+			);
+	}
 }
 
 
@@ -81,6 +82,9 @@ void UGrabber::Release()
 	{
 		PhysicsHandle->GetGrabbedComponent()->WakeAllRigidBodies();
 		PhysicsHandle->ReleaseComponent();
+		AActor* GrabbedActor = PhysicsHandle->GetGrabbedComponent()->GetOwner();
+		GrabbedActor->Tags.Remove("Grabbed");
+
 	}
 	// UE_LOG(LogTemp, Display, TEXT("Released"));
 }
